@@ -9,15 +9,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func AppStatus(w http.ResponseWriter, r *http.Request) {
+func appStatus(w http.ResponseWriter, r *http.Request) {
 	// Check if app is working
 	fmt.Fprintf(w, "%q", html.EscapeString("edgex-app iw working\n"))
 }
 
+//InitHTTP Initialize http status endpoint
 func InitHTTP(port string) error {
 	fmt.Println("initializing server")
 	r := mux.NewRouter()
-	r.HandleFunc("/", AppStatus)
+	r.HandleFunc("/", appStatus)
 	srv := &http.Server{
 		Handler: r,
 		Addr:    "127.0.0.1:" + port,

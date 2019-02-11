@@ -16,6 +16,7 @@ import (
 type Service interface {
 	// Register adds new evetn
 	RegisterEvent(model.Event) error
+	RetrieveByID(string) (model.Event, error)
 }
 
 var _ Service = (*eventsService)(nil)
@@ -34,4 +35,9 @@ func New(events EventsRepository) Service {
 func (svc eventsService) RegisterEvent(event model.Event) error {
 
 	return svc.events.Save(event)
+}
+
+func (svc eventsService) RetrieveByID(id string) (model.Event, error) {
+	return svc.events.RetrieveByID(id)
+
 }
