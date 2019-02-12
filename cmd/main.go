@@ -7,14 +7,16 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 
+	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
 	"github.com/mainflux/mainflux/logger"
-
-	httpapi "github.com/mteodor/edgex-app/exapp/api/http"
-
 	"github.com/mteodor/edgex-app/exapp"
+	"github.com/mteodor/edgex-app/exapp/api"
+	httpapi "github.com/mteodor/edgex-app/exapp/api/http"
 	"github.com/mteodor/edgex-app/exapp/postgres"
 	nats "github.com/nats-io/go-nats"
+	stdprometheus "github.com/prometheus/client_golang/prometheus"
 )
 
 const (
@@ -76,9 +78,8 @@ func main() {
 		logger.Error("Failed to connect to nats")
 	}
 	defer closeConn(nc, logger)
-	// Simple Async Subscriber
-	eventsRepository := postgres.New(db)
-	svc := exapp.New(eventsRepository)
+
+	svc := newService(db, logger)
 
 	logger.Info(fmt.Sprintf("pid: %d connecting to nats\n", os.Getpid()))
 
@@ -94,7 +95,7 @@ func main() {
 
 	go func() {
 		c := make(chan os.Signal)
-		signal.Notify(c)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 		errs <- fmt.Errorf("%s", <-c)
 	}()
 
@@ -148,11 +149,34 @@ func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 	return db
 }
 
-//geting enviroment
+//Env geting enviroment
 func Env(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
 	}
 
 	return fallback
+}
+
+func newService(db *sql.DB, logger logger.Logger) exapp.Service {
+
+	eventsRepository := postgres.New(db)
+	svc := exapp.New(eventsRepository)
+	svc = api.LoggingMiddleware(svc, logger)
+	svc = api.MetricsMiddleware(
+		svc,
+		kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
+			Namespace: "events",
+			Subsystem: "api",
+			Name:      "request_count",
+			Help:      "Number of requests received.",
+		}, []string{"method"}),
+		kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
+			Namespace: "events",
+			Subsystem: "api",
+			Name:      "request_latency_microseconds",
+			Help:      "Total duration of requests in microseconds.",
+		}, []string{"method"}),
+	)
+	return svc
 }
