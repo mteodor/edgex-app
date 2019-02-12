@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/mteodor/edgex-app/events"
+	"github.com/mteodor/edgex-app/exapp"
 )
 
-func getStatusEndpoint(svc events.Service) endpoint.Endpoint {
+func getStatusEndpoint(svc exapp.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 
 		fmt.Println("get status")
@@ -24,7 +24,7 @@ func getStatusEndpoint(svc events.Service) endpoint.Endpoint {
 	}
 }
 
-func getEventsEndpoint(svc events.Service) endpoint.Endpoint {
+func getEventsEndpoint(svc exapp.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		fmt.Println("get event")
 		req := request.(eventRequest)

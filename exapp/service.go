@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-package events
+package exapp
 
 import (
 	model "github.com/edgexfoundry/edgex-go/pkg/models"
+	"github.com/mteodor/edgex-app/exapp/events"
 )
 
 // Service specifies an API that must be fullfiled by the domain service
@@ -18,19 +19,18 @@ type Service interface {
 	RegisterEvent(model.Event) error
 
 	RetrieveByID(string) (model.Event, error)
-
 }
 
 var _ Service = (*eventsService)(nil)
 
 type eventsService struct {
-	events EventsRepository
+	events events.EventsRepository
 	//	hasher Hasher
 	//	idp    IdentityProvider
 }
 
 // New instantiates the events service implementation.
-func New(events EventsRepository) Service {
+func New(events events.EventsRepository) Service {
 	return &eventsService{events: events}
 }
 
@@ -39,9 +39,7 @@ func (svc eventsService) RegisterEvent(event model.Event) error {
 	return svc.events.Save(event)
 }
 
-
 func (svc eventsService) RetrieveByID(id string) (model.Event, error) {
 	return svc.events.RetrieveByID(id)
 
 }
-

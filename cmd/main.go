@@ -9,7 +9,6 @@ import (
 	"os/signal"
 
 	"github.com/mainflux/mainflux/logger"
-	"github.com/mteodor/edgex-app/events"
 
 	httpapi "github.com/mteodor/edgex-app/events/api/http"
 
@@ -78,7 +77,7 @@ func main() {
 	defer closeConn(nc)
 	// Simple Async Subscriber
 	eventsRepository := postgres.New(db)
-	svc := events.New(eventsRepository)
+	svc := exapp.New(eventsRepository)
 
 	logger.Info(fmt.Sprintf("pid: %d connecting to nats\n", os.Getpid()))
 
