@@ -4,17 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/mteodor/edgex-app/events"
 
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-zoo/bone"
 	"github.com/mainflux/mainflux"
-	"github.com/mainflux/mainflux/logger"
 	"github.com/mainflux/mainflux/things"
+	"github.com/mteodor/edgex-app/exapp"
 )
 
 const (
@@ -32,11 +29,11 @@ var (
 )
 
 // MakeHandler returns a HTTP handler for API endpoints.
-func MakeHandler(svc events.Service) http.Handler {
+func MakeHandler(svc exapp.Service) http.Handler {
 	if svc == nil {
 		return nil
 	}
-	logger.Info("making handler")
+	//logger.Info("making handler")
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorEncoder(encodeError),
 	}
@@ -65,7 +62,7 @@ func decodeStatusRequest(_ context.Context, r *http.Request) (interface{}, error
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 
-		logger.Info(fmt.Spring("decode stat req failed %s", req.Name))
+		//logger.Info(fmt.Spring("decode stat req failed %s", req.Name))
 		return nil, err
 	}
 

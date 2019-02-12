@@ -10,10 +10,10 @@ import (
 
 	"github.com/mainflux/mainflux/logger"
 
-	httpapi "github.com/mteodor/edgex-app/events/api/http"
+	httpapi "github.com/mteodor/edgex-app/exapp/api/http"
 
-	"github.com/mteodor/edgex-app/events/postgres"
 	"github.com/mteodor/edgex-app/exapp"
+	"github.com/mteodor/edgex-app/exapp/postgres"
 	nats "github.com/nats-io/go-nats"
 )
 
@@ -74,7 +74,7 @@ func main() {
 	if err != nil {
 		logger.Error("Failed to connect to nats")
 	}
-	defer closeConn(nc)
+	defer closeConn(nc, logger)
 	// Simple Async Subscriber
 	eventsRepository := postgres.New(db)
 	svc := exapp.New(eventsRepository)
@@ -102,7 +102,7 @@ func main() {
 
 }
 
-func closeConn(nc *nats.Conn) {
+func closeConn(nc *nats.Conn, logger logger.Logger) {
 	// Drain connection (Preferred for responders)
 	// Close() not needed if this is called.
 	logger.Info("closing down")
@@ -143,7 +143,7 @@ func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 		logger.Error(fmt.Sprintf("Failed to connect to postgres: %s", err))
 		os.Exit(1)
 	}
-	logger.Info("connected to database")
+	//logger.Info("connected to database")
 	return db
 }
 

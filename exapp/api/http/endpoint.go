@@ -5,14 +5,13 @@ import (
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/mainflux/mainflux/logger"
 	"github.com/mteodor/edgex-app/exapp"
 )
 
 func getStatusEndpoint(svc exapp.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 
-		logger.Info("get status request")
+		//logger.Info("get status request")
 		req := request.(statusRequest)
 		var greeting string
 		greeting = fmt.Sprintf("Hello, %s, I'm working fine", req.Name)
@@ -27,7 +26,7 @@ func getStatusEndpoint(svc exapp.Service) endpoint.Endpoint {
 
 func getEventsEndpoint(svc exapp.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		logger.Info("get event:" + req.Id)
+		//logger.Info("get event:" + req.Id)
 		req := request.(eventRequest)
 
 		res, err := svc.RetrieveByID(req.Id)

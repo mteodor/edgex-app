@@ -12,7 +12,6 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq" // required for SQL access
-	"github.com/mainflux/mainflux/logger"
 	migrate "github.com/rubenv/sql-migrate"
 )
 
@@ -73,7 +72,7 @@ func migrateDB(db *sql.DB) error {
 	_, err := migrate.Exec(db, "postgres", migrations, migrate.Up)
 
 	if err != nil {
-		logger.Error("failed to create table")
+		//logger.Info("failed to create table")
 	}
 
 	return err
