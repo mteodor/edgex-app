@@ -33,7 +33,11 @@ func New(db *sql.DB) events.EventsRepository {
 func (rr eventRepository) Save(event model.Event) error {
 
 	fmt.Println("saving event")
+<<<<<<< HEAD
 	q := `INSERT INTO events (id, pushed, device, created, modifed, origin, event ) VALUES ($1, $2, $3, $4, $5, $6, $7)`
+=======
+	q := `INSERT INTO events (id, pushed, device, created, modifed, origin, event ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+>>>>>>> 8b2d9977cbbd8ff37891a6bc6f99d4ffa1abe5d9
 
 	if _, err := rr.db.Exec(q, event.ID, event.Pushed, event.Created, event.Origin, event.Modified, event.Device, event.Origin, event.Event); err != nil {
 		if pqErr, ok := err.(*pq.Error); ok && errDuplicate == pqErr.Code.Name() {

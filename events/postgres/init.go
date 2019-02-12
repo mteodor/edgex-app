@@ -35,9 +35,13 @@ func Connect(cfg Config) (*sql.DB, error) {
 	url := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s sslcert=%s sslkey=%s sslrootcert=%s", cfg.Host, cfg.Port, cfg.User, cfg.Name, cfg.Pass, cfg.SSLMode, cfg.SSLCert, cfg.SSLKey, cfg.SSLRootCert)
 
 	db, err := sql.Open("postgres", url)
+<<<<<<< HEAD
 	fmt.Println("url:" + url)
 	if err != nil {
 		fmt.Println("failed to connect")
+=======
+	if err != nil {
+>>>>>>> 8b2d9977cbbd8ff37891a6bc6f99d4ffa1abe5d9
 		return nil, err
 	}
 
@@ -48,7 +52,11 @@ func Connect(cfg Config) (*sql.DB, error) {
 }
 
 func migrateDB(db *sql.DB) error {
+<<<<<<< HEAD
 	fmt.Println("connecting to db\n")
+=======
+	fmt.Printf("connecting to db\n")
+>>>>>>> 8b2d9977cbbd8ff37891a6bc6f99d4ffa1abe5d9
 	migrations := &migrate.MemoryMigrationSource{
 		Migrations: []*migrate.Migration{
 			{
@@ -70,8 +78,11 @@ func migrateDB(db *sql.DB) error {
 	}
 
 	_, err := migrate.Exec(db, "postgres", migrations, migrate.Up)
+<<<<<<< HEAD
 	if err != nil {
 		fmt.Println("failed to create table")
 	}
+=======
+>>>>>>> 8b2d9977cbbd8ff37891a6bc6f99d4ffa1abe5d9
 	return err
 }
