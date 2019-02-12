@@ -40,11 +40,23 @@
 			"revisionTime": "2018-10-15T13:59:52Z"
 		},
 		{
+			"checksumSHA1": "oqtNI+0KmQ+eZgH5FArkETtOoHE=",
+			"path": "github.com/go-kit/kit/endpoint",
+			"revision": "10f464fb11741e507cbb5201eb889c37dd51dbab",
+			"revisionTime": "2019-02-05T19:34:09Z"
+		},
+		{
 			"checksumSHA1": "KrIRJ4p3nRze4NcxfgX5+N9+D1M=",
 			"origin": "github.com/mainflux/mainflux/vendor/github.com/go-kit/kit/log",
 			"path": "github.com/go-kit/kit/log",
 			"revision": "b12bb3374bf230c0317f3c1abf8e393a348c4a5e",
 			"revisionTime": "2019-02-07T07:43:43Z"
+		},
+		{
+			"checksumSHA1": "RllepLsfpM/kcDQX0MtkZXrYlGs=",
+			"path": "github.com/go-kit/kit/transport/http",
+			"revision": "10f464fb11741e507cbb5201eb889c37dd51dbab",
+			"revisionTime": "2019-02-05T19:34:09Z"
 		},
 		{
 			"checksumSHA1": "KxX/Drph+byPXBFIXaCZaCOAnrU=",
@@ -59,6 +71,12 @@
 			"path": "github.com/go-stack/stack",
 			"revision": "b12bb3374bf230c0317f3c1abf8e393a348c4a5e",
 			"revisionTime": "2019-02-07T07:43:43Z"
+		},
+		{
+			"checksumSHA1": "TAbY8SZc7FDWpve8OfRpShpZZYs=",
+			"path": "github.com/go-zoo/bone",
+			"revision": "d7ce1372afa7a4319e9b84ab08593d1342a8c10a",
+			"revisionTime": "2019-01-17T14:50:01Z"
 		},
 		{
 			"checksumSHA1": "mE9XW26JSpe4meBObM6J/Oeq0eg=",
@@ -135,6 +153,12 @@
 		{
 			"checksumSHA1": "sTh6Q6ImppAO2+KwIhdvEG9Etyc=",
 			"path": "github.com/mainflux/mainflux/logger",
+			"revision": "b12bb3374bf230c0317f3c1abf8e393a348c4a5e",
+			"revisionTime": "2019-02-07T07:43:43Z"
+		},
+		{
+			"checksumSHA1": "nGXdktpuYCs1TpLytumBPS/L8wM=",
+			"path": "github.com/mainflux/mainflux/things",
 			"revision": "b12bb3374bf230c0317f3c1abf8e393a348c4a5e",
 			"revisionTime": "2019-02-07T07:43:43Z"
 		},
