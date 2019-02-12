@@ -42,6 +42,7 @@ const (
 	envDBSSLCert     = "MF_EDGEX_DB_SSL_CERT"
 	envDBSSLKey      = "MF_EDGEX_DB_SSL_KEY"
 	envDBSSLRootCert = "MF_EDGEX_DB_SSL_ROOT_CERT"
+	topicUnknown     = "out.unknown"
 )
 
 type config struct {
@@ -87,7 +88,7 @@ func main() {
 		logger.Error(fmt.Sprintf("Failed to init http server on port %s: ", cfg.Port))
 		return
 	}
-	nc.Subscribe("out.unknown", exapp.NatsMSGHandler(svc))
+	nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
 	logger.Info("init server done")
 	errs := make(chan error, 2)
 
