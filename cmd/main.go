@@ -88,7 +88,7 @@ func main() {
 		return
 	}
 	nc.Subscribe("out.unknown", exapp.NatsMSGHandler(svc))
-	fmt.Printf("init server done\n")
+	logger.Info("init server done")
 	errs := make(chan error, 2)
 
 	go func() {
@@ -105,7 +105,7 @@ func main() {
 func closeConn(nc *nats.Conn) {
 	// Drain connection (Preferred for responders)
 	// Close() not needed if this is called.
-	fmt.Printf("closing down")
+	logger.Info("closing down")
 	if nc == nil {
 		return
 	}
@@ -143,7 +143,7 @@ func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 		logger.Error(fmt.Sprintf("Failed to connect to postgres: %s", err))
 		os.Exit(1)
 	}
-	fmt.Printf("connected to database\n")
+	logger.Info("connected to database")
 	return db
 }
 

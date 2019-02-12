@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	model "github.com/edgexfoundry/edgex-go/pkg/models"
+	"github.com/mainflux/mainflux/logger"
 	"github.com/mteodor/edgex-app/events"
 	nats "github.com/nats-io/go-nats"
 )
@@ -13,7 +14,7 @@ import (
 func NatsMSGHandler(svc events.Service) nats.MsgHandler {
 
 	return func(msg *nats.Msg) {
-		fmt.Printf("Received a message: %s\n", string(msg.Data))
+		logger.Info(fmt.Sprintf("Received a message: %s\n", string(msg.Data))
 		processMsg(svc, msg)
 	}
 }
@@ -24,8 +25,7 @@ func processMsg(svc events.Service, msg *nats.Msg) {
 
 	err := svc.RegisterEvent(data)
 	if err != nil {
-		fmt.Printf("failed to save data")
+		logger.Info("failed to save data")
 	}
-	fmt.Printf("unmarshalled:" + data.String())
 
 }

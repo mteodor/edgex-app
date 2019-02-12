@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/mainflux/mainflux/logger"
 )
 
 func AppStatus(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +16,7 @@ func AppStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 func InitHTTP(port string) error {
-	fmt.Println("initializing server")
+	logger.Info("initializing server")
 	r := mux.NewRouter()
 	r.HandleFunc("/", AppStatus)
 	srv := &http.Server{

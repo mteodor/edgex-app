@@ -9,10 +9,10 @@ package postgres
 
 import (
 	"database/sql"
-	"fmt"
 
 	model "github.com/edgexfoundry/edgex-go/pkg/models"
 	"github.com/lib/pq"
+	"github.com/mainflux/mainflux/logger"
 	events "github.com/mteodor/edgex-app/events"
 )
 
@@ -32,10 +32,9 @@ func New(db *sql.DB) events.EventsRepository {
 
 func (rr eventRepository) Save(event model.Event) error {
 
-	fmt.Println("saving event")
+	logger.Info("saving event")
 
 	q := `INSERT INTO events (id, pushed, device, created, modifed, origin, event ) VALUES ($1, $2, $3, $4, $5, $6, $7)`
-
 
 	if _, err := rr.db.Exec(q, event.ID, event.Pushed, event.Created, event.Origin, event.Modified, event.Device, event.Origin, event.Event); err != nil {
 		if pqErr, ok := err.(*pq.Error); ok && errDuplicate == pqErr.Code.Name() {

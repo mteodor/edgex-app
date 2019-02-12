@@ -12,6 +12,7 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq" // required for SQL access
+	"github.com/mainflux/mainflux/logger"
 	migrate "github.com/rubenv/sql-migrate"
 )
 
@@ -35,7 +36,6 @@ func Connect(cfg Config) (*sql.DB, error) {
 	url := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s sslcert=%s sslkey=%s sslrootcert=%s", cfg.Host, cfg.Port, cfg.User, cfg.Name, cfg.Pass, cfg.SSLMode, cfg.SSLCert, cfg.SSLKey, cfg.SSLRootCert)
 
 	db, err := sql.Open("postgres", url)
-
 
 	if err != nil {
 
@@ -73,7 +73,7 @@ func migrateDB(db *sql.DB) error {
 	_, err := migrate.Exec(db, "postgres", migrations, migrate.Up)
 
 	if err != nil {
-		fmt.Println("failed to create table")
+		logger.Error("failed to create table")
 	}
 
 	return err

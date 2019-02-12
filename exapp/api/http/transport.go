@@ -13,6 +13,7 @@ import (
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-zoo/bone"
 	"github.com/mainflux/mainflux"
+	"github.com/mainflux/mainflux/logger"
 	"github.com/mainflux/mainflux/things"
 )
 
@@ -35,7 +36,7 @@ func MakeHandler(svc events.Service) http.Handler {
 	if svc == nil {
 		return nil
 	}
-	fmt.Println("making handler")
+	logger.Info("making handler")
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorEncoder(encodeError),
 	}
@@ -64,7 +65,7 @@ func decodeStatusRequest(_ context.Context, r *http.Request) (interface{}, error
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 
-		fmt.Print("decode stat req failed %s")
+		logger.Info(fmt.Spring("decode stat req failed %s", req.Name))
 		return nil, err
 	}
 
