@@ -10,10 +10,9 @@ import (
 
 	"github.com/mainflux/mainflux/logger"
 	"github.com/mteodor/edgex-app/events"
-<<<<<<< HEAD
+
 	httpapi "github.com/mteodor/edgex-app/events/api/http"
-=======
->>>>>>> 8b2d9977cbbd8ff37891a6bc6f99d4ffa1abe5d9
+
 	"github.com/mteodor/edgex-app/events/postgres"
 	"github.com/mteodor/edgex-app/exapp"
 	nats "github.com/nats-io/go-nats"
@@ -80,10 +79,8 @@ func main() {
 	// Simple Async Subscriber
 	eventsRepository := postgres.New(db)
 	svc := events.New(eventsRepository)
-<<<<<<< HEAD
 
 	logger.Info(fmt.Sprintf("pid: %d connecting to nats\n", os.Getpid()))
-	nc.Subscribe("out.unknown", exapp.NatsMSGHandler(svc))
 
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), httpapi.MakeHandler(svc))
 
@@ -92,24 +89,12 @@ func main() {
 		return
 	}
 
-	errs := make(chan error, 2)
-=======
 
-	fmt.Printf("pid: %d connecting to nats\n", os.Getpid())
 	nc.Subscribe("out.unknown", exapp.NatsMSGHandler(svc))
 
-	err = exapp.InitHTTP(cfg.Port)
-	if err != nil {
-		logger.Error("Failed to init http server")
-	}
+
 	fmt.Printf("init server done\n")
 	errs := make(chan error, 2)
-
-	go func() {
-		fmt.Printf(fmt.Sprintf("edgex-app started, exposed port %s", cfg.Port))
-		errs <- exapp.InitHTTP(cfg.Port)
-	}()
->>>>>>> 8b2d9977cbbd8ff37891a6bc6f99d4ffa1abe5d9
 
 	go func() {
 		c := make(chan os.Signal)
