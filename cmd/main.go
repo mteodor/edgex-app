@@ -88,11 +88,7 @@ func main() {
 		logger.Error(fmt.Sprintf("Failed to init http server on port %s: ", cfg.Port))
 		return
 	}
-
-
 	nc.Subscribe("out.unknown", exapp.NatsMSGHandler(svc))
-
-
 	fmt.Printf("init server done\n")
 	errs := make(chan error, 2)
 
