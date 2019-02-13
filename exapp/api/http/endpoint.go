@@ -11,8 +11,8 @@ import (
 func getStatusEndpoint(svc exapp.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 
-		//logger.Info("get status request")
 		req := request.(statusRequest)
+		(*svc.GetLogger()).Info(fmt.Sprintf("get status for %s" + req.Name))
 		var greeting string
 		greeting = fmt.Sprintf("Hello, %s, I'm working fine", req.Name)
 		res := statusResponse{
@@ -26,9 +26,9 @@ func getStatusEndpoint(svc exapp.Service) endpoint.Endpoint {
 
 func getEventsEndpoint(svc exapp.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		//logger.Info("get event:" + req.Id)
-		req := request.(eventRequest)
 
+		req := request.(eventRequest)
+		(*svc.GetLogger()).Info(fmt.Sprintf("get events for %s" + req.Id))
 		res, err := svc.RetrieveByID(req.Id)
 
 		return res, err

@@ -23,12 +23,5 @@ install:
 test:
 	GOCACHE=off go test -v -race -tags test $(shell go list ./... | grep -v 'vendor\|cmd')
 
-
-
-release:
-	$(eval version = $(shell git describe --abbrev=0 --tags))
-	git checkout $(version)
-
-
 	
 

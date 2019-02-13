@@ -4,14 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-zoo/bone"
 	"github.com/mainflux/mainflux"
+	"github.com/mainflux/mainflux/logger"
 	"github.com/mainflux/mainflux/things"
 	"github.com/mteodor/edgex-app/exapp"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -29,11 +32,11 @@ var (
 )
 
 // MakeHandler returns a HTTP handler for API endpoints.
-func MakeHandler(svc exapp.Service) http.Handler {
+func MakeHandler(svc exapp.Service, logger logger.Logger) http.Handler {
 	if svc == nil {
 		return nil
 	}
-	//logger.Info("making handler")
+	logger.Info("making handler")
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorEncoder(encodeError),
 	}
@@ -54,6 +57,9 @@ func MakeHandler(svc exapp.Service) http.Handler {
 		opts...,
 	))
 
+	r.GetFunc("/version", exapp.Version("exapp"))
+	r.Handle("/metrics", promhttp.Handler())
+
 	return r
 }
 
@@ -62,7 +68,7 @@ func decodeStatusRequest(_ context.Context, r *http.Request) (interface{}, error
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 
-		//logger.Info(fmt.Spring("decode stat req failed %s", req.Name))
+		fmt.Println(fmt.Sprintf("decode stat req failed %s", req.Name))
 		return nil, err
 	}
 

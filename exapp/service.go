@@ -9,6 +9,7 @@ package exapp
 
 import (
 	model "github.com/edgexfoundry/edgex-go/pkg/models"
+	"github.com/mainflux/mainflux/logger"
 	"github.com/mteodor/edgex-app/exapp/events"
 )
 
@@ -19,19 +20,27 @@ type Service interface {
 	RegisterEvent(model.Event) error
 
 	RetrieveByID(string) (model.Event, error)
+
+	GetLogger() *logger.Logger
 }
 
 var _ Service = (*eventsService)(nil)
 
 type eventsService struct {
 	events events.EventsRepository
+	logger *logger.Logger
 	//	hasher Hasher
 	//	idp    IdentityProvider
 }
 
 // New instantiates the events service implementation.
-func New(events events.EventsRepository) Service {
-	return &eventsService{events: events}
+func New(events events.EventsRepository, logger *logger.Logger) Service {
+	return &eventsService{events, logger}
+}
+
+// GetLogger - retrieves logger that can be used
+func (svc eventsService) GetLogger() *logger.Logger {
+	return svc.logger
 }
 
 func (svc eventsService) RegisterEvent(event model.Event) error {

@@ -2,6 +2,7 @@ package exapp
 
 import (
 	"encoding/json"
+	"fmt"
 
 	model "github.com/edgexfoundry/edgex-go/pkg/models"
 	nats "github.com/nats-io/go-nats"
@@ -11,7 +12,7 @@ import (
 func NatsMSGHandler(svc Service) nats.MsgHandler {
 
 	return func(msg *nats.Msg) {
-		//logger.Info(fmt.Sprintf("Received a message: %s\n", string(msg.Data)))
+		(*svc.GetLogger()).Info((fmt.Sprintf("Received a message: %s\n", string(msg.Data))))
 		processMsg(svc, msg)
 	}
 }
@@ -22,7 +23,7 @@ func processMsg(svc Service, msg *nats.Msg) {
 
 	err := svc.RegisterEvent(data)
 	if err != nil {
-		//logger.Error("failed to save data")
+		(*svc.GetLogger()).Error("failed to save data")
 	}
 
 }

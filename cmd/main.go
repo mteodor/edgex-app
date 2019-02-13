@@ -82,14 +82,14 @@ func main() {
 	svc := newService(db, logger)
 
 	logger.Info(fmt.Sprintf("pid: %d connecting to nats\n", os.Getpid()))
+	nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), httpapi.MakeHandler(svc))
-
+	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), httpapi.MakeHandler(svc, logger))
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed to init http server on port %s: ", cfg.Port))
 		return
 	}
-	nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
+
 	logger.Info("init server done")
 	errs := make(chan error, 2)
 
@@ -139,13 +139,13 @@ func loadConfig() config {
 }
 
 func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
-	db, err := postgres.Connect(dbConfig)
+	db, err := postgres.Connect(dbConfig, logger)
 
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed to connect to postgres: %s", err))
 		os.Exit(1)
 	}
-	//logger.Info("connected to database")
+	logger.Info("connected to database")
 	return db
 }
 
@@ -160,9 +160,9 @@ func Env(key, fallback string) string {
 
 func newService(db *sql.DB, logger logger.Logger) exapp.Service {
 
-	eventsRepository := postgres.New(db)
-	svc := exapp.New(eventsRepository)
-	svc = api.LoggingMiddleware(svc, logger)
+	eventsRepository := postgres.New(db, logger)
+	svc := exapp.New(eventsRepository, &logger)
+	svc = api.LoggingMiddleware(svc, &logger)
 	svc = api.MetricsMiddleware(
 		svc,
 		kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{

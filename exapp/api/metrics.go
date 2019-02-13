@@ -5,6 +5,7 @@ import (
 
 	model "github.com/edgexfoundry/edgex-go/pkg/models"
 	"github.com/go-kit/kit/metrics"
+	log "github.com/mainflux/mainflux/logger"
 	"github.com/mteodor/edgex-app/exapp"
 )
 
@@ -24,6 +25,10 @@ func MetricsMiddleware(svc exapp.Service, counter metrics.Counter, latency metri
 		latency: latency,
 		svc:     svc,
 	}
+}
+
+func (ms *metricsMiddleware) GetLogger() *log.Logger {
+	return ms.svc.GetLogger()
 }
 
 func (ms *metricsMiddleware) RegisterEvent(ev model.Event) error {
