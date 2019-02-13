@@ -1,6 +1,6 @@
 # edgex-app
 edgex-app service provides means of catching the events incoming from the edgex gateway.
-When mainflux is running and edgex gateway is subscribed to channel messages being sent
+When Mainflux is running and Edgex gateway is subscribed to channel messages being sent
 are not normalized since the unadequate format is used.
 Normalizer will send unormalized messages to NATS on topic out.unknown
 
