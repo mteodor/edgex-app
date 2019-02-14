@@ -14,7 +14,7 @@ import (
 
 const version string = "0.0.1"
 
-//VersionInfo - application version
+// VersionInfo - application version
 type VersionInfo struct {
 	Service string `json:"service"`
 	Version string `json:"version"`
