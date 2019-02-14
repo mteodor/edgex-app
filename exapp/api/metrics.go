@@ -27,8 +27,8 @@ func MetricsMiddleware(svc exapp.Service, counter metrics.Counter, latency metri
 	}
 }
 
-func (ms *metricsMiddleware) GetLogger() *log.Logger {
-	return ms.svc.GetLogger()
+func (ms *metricsMiddleware) Logger() log.Logger {
+	return ms.svc.Logger()
 }
 
 func (ms *metricsMiddleware) RegisterEvent(ev model.Event) error {

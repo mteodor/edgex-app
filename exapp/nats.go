@@ -12,7 +12,7 @@ import (
 func NatsMSGHandler(svc Service) nats.MsgHandler {
 
 	return func(msg *nats.Msg) {
-		(*svc.GetLogger()).Info((fmt.Sprintf("Received a message: %s\n", string(msg.Data))))
+		svc.Logger().Info((fmt.Sprintf("Received a message: %s\n", string(msg.Data))))
 		processMsg(svc, msg)
 	}
 }
@@ -23,7 +23,7 @@ func processMsg(svc Service, msg *nats.Msg) {
 
 	err := svc.RegisterEvent(data)
 	if err != nil {
-		(*svc.GetLogger()).Error("failed to save data")
+		svc.Logger().Error("failed to save data")
 	}
 
 }

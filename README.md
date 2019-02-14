@@ -1,8 +1,8 @@
 # edgex-app
-edgex-app service provides means of catching the events incoming from the edgex gateway.
+Edgex-app service provides means of catching the events incoming from the edgex gateway.
 When Mainflux is running and Edgex gateway is subscribed to channel messages being sent
 are not normalized since the unadequate format is used.
-Normalizer will send unormalized messages to NATS on topic out.unknown
+Normalizer will send unormalized messages to NATS on topic ```out.unknown```
 
 
 ## Configuration
@@ -50,3 +50,14 @@ MF_EDGEX_APP_LOG_LEVEL=[edgex-app log level] MF_EDGEX_DB_HOST=[Database host add
 
 ## Usage
 Application can be used to catch edgex events
+
+```
+curl  http://localhost:8000/version
+
+{"service":"exapp","version":"0.0.1"}
+
+curl -X POST http://localhost:8000/status -d '{"name": "John"}'
+
+{"greeting":"Hello, John, I'm working fine"}
+
+```
