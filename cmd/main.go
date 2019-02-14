@@ -149,7 +149,7 @@ func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 	return db
 }
 
-//Env geting enviroment
+// Env geting enviroment
 func Env(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v

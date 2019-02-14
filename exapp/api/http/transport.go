@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -68,7 +67,6 @@ func decodeStatusRequest(_ context.Context, r *http.Request) (interface{}, error
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 
-		fmt.Println(fmt.Sprintf("decode stat req failed %s", req.Name))
 		return nil, err
 	}
 
