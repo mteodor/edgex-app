@@ -17,8 +17,7 @@ type metricsMiddleware struct {
 	svc     exapp.Service
 }
 
-// MetricsMiddleware instruments core service by tracking request count and
-// latency.
+// MetricsMiddleware instruments core service by tracking request count and latency.
 func MetricsMiddleware(svc exapp.Service, counter metrics.Counter, latency metrics.Histogram) exapp.Service {
 	return &metricsMiddleware{
 		counter: counter,
@@ -27,8 +26,8 @@ func MetricsMiddleware(svc exapp.Service, counter metrics.Counter, latency metri
 	}
 }
 
-func (ms *metricsMiddleware) GetLogger() *log.Logger {
-	return ms.svc.GetLogger()
+func (ms *metricsMiddleware) Logger() log.Logger {
+	return ms.svc.Logger()
 }
 
 func (ms *metricsMiddleware) RegisterEvent(ev model.Event) error {

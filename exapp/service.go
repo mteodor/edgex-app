@@ -21,25 +21,25 @@ type Service interface {
 
 	RetrieveByID(string) (model.Event, error)
 
-	GetLogger() *logger.Logger
+	Logger() logger.Logger
 }
 
 var _ Service = (*eventsService)(nil)
 
 type eventsService struct {
 	events events.EventsRepository
-	logger *logger.Logger
+	logger logger.Logger
 	//	hasher Hasher
 	//	idp    IdentityProvider
 }
 
 // New instantiates the events service implementation.
-func New(events events.EventsRepository, logger *logger.Logger) Service {
-	return &eventsService{events, logger}
+func New(events events.EventsRepository, l logger.Logger) Service {
+	return &eventsService{events, l}
 }
 
 // GetLogger - retrieves logger that can be used
-func (svc eventsService) GetLogger() *logger.Logger {
+func (svc eventsService) Logger() logger.Logger {
 	return svc.logger
 }
 

@@ -153,7 +153,7 @@ func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 	return db
 }
 
-//Env geting enviroment
+// Env geting enviroment
 func Env(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
@@ -165,8 +165,8 @@ func Env(key, fallback string) string {
 func newService(db *sql.DB, logger logger.Logger) exapp.Service {
 
 	eventsRepository := postgres.New(db, logger)
-	svc := exapp.New(eventsRepository, &logger)
-	svc = api.LoggingMiddleware(svc, &logger)
+	svc := exapp.New(eventsRepository, logger)
+	svc = api.LoggingMiddleware(svc)
 	svc = api.MetricsMiddleware(
 		svc,
 		kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
