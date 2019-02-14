@@ -62,6 +62,17 @@ func migrateDB(db *sql.DB, l logger.Logger) error {
 					modified bigint,
 					origin   bigint,
 					event  CHAR(60) NOT NULL)`,
+
+					`CREATE TABLE IF NOT EXISTS readings(rid VARCHAR(254) PRIMARY KEY,
+				    eid VARCHAR(254) references events(id),
+					pushed bigint,
+					created bigint,
+					origin bigint,
+					modified bigint,
+					device CHAR(60) NOT NULL,
+					name char(60) NOT NULL,
+					value char(60) NOT NULL
+					)`,
 				},
 
 				Down: []string{"DROP TABLE events", "DROP TABLE readings"},
