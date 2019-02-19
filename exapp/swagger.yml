@@ -1,0 +1,64 @@
+swagger: "2.0"
+info:
+  title: Edgex app service
+  description: Service for recieving and manipulating edgex specific format
+  version: "1.0.0"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /status:
+    post:
+      summary: Gives a status and greeting to user
+      description: |
+        Gives a status and greeting to user.
+      tags:
+        - status
+      parameters:
+        - name: status
+          description: JSON-formatted message providing username.
+          in: body
+          schema:
+            $ref: "#/definitions/StatReq"
+          required: true
+      responses:
+        201:
+          description: Greeting to user with status of service.
+          headers:
+            Location:
+              type: string
+        400:
+          description: Failed due to malformed JSON.
+        404:
+          description: Page does not exist..
+  /version:
+    get:
+      summary: Retrieves version info
+      tags:
+        - version
+      responses:
+        200:
+          description: Service version.
+          schema:
+            $ref: "#/definitions/VerRes"
+        404:
+          description: Page does not exist.
+responses:
+  ServiceError:
+    description: Unexpected server-side error occured.
+definitions:
+  VerRes:
+    type: object
+    properties:
+      Version:
+        type: string
+        description: Version of the service.
+  StatReq:
+    type: object
+    properties:
+      Name:
+        type: string
+        description: Name of user.
+    required:
+- type

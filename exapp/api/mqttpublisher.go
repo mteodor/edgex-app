@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	log "github.com/sirupsen/logrus"
+	log "github.com/mainflux/mainflux/logger"
 )
 
 type MQTTPublisher interface {
@@ -51,9 +51,9 @@ func (m *mqttPublisher) connect() error {
 // Publish publishes a message to the configured topic.
 func (m *mqttPublisher) Publish(payload []byte) {
 
-	m.logger.Debug(fmt.Sprintf("Publishing message %s", payload))
+	(*m.logger).Debug(fmt.Sprintf("Publishing message %s", payload))
 	if token := m.mqttClient.Publish(m.topic, 0, false, payload); token.Wait() && token.Error() != nil {
-		m.logger.Error(fmt.Sprintf("Failed to publish message on topic %s : %s", m.topic, token.Error()))
+		(*m.logger).Error(fmt.Sprintf("Failed to publish message on topic %s : %s", m.topic, token.Error()))
 	}
 
 }
