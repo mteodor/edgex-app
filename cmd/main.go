@@ -44,6 +44,11 @@ const (
 	envDBSSLCert     = "MF_EDGEX_DB_SSL_CERT"
 	envDBSSLKey      = "MF_EDGEX_DB_SSL_KEY"
 	envDBSSLRootCert = "MF_EDGEX_DB_SSL_ROOT_CERT"
+	envMqttHost      = "MF_EDGEX_MQTT_HOST"
+	envMqttPassword  = "MF_EDGEX_MQTT_PASS"
+	envMqttUsername  = "MF_EDGEX_MQTT_USERNAME"
+	envMqttSndTopic  = "MF_EDGEX_MQTT_TOPIC"
+	envMqttClientID  = "MF_EDGEX_MQTT_CLIENT_ID"
 	topicUnknown     = "out.unknown"
 )
 
@@ -64,26 +69,33 @@ func main() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	// Connect to a NATS server
-
+	// Connect to a DB server
 	db := connectToDB(cfg.dbConfig, logger)
 	if db == nil {
 		log.Fatalf("cannot connect to db")
 	}
 	defer db.Close()
 
-	logger.Info(fmt.Sprintf("connecting %s", defNatsURL))
-	nc, err := nats.Connect(defNatsURL)
-	if err != nil {
-		logger.Error("Failed to connect to nats")
+	// Make a MQTT publish connection
+	mfMqttHost := Env(envMqttHost, "")
+	mfMqttPassword := Env(envMqttPassword, "")
+	mfMqttUsername := Env(envMqttUsername, "")
+	mfMqttClientID := Env(envMqttClientID, "")
+	mfMqttSndTopic := Env(envMqttSndTopic, "")
+	if mfMqttPassword != "" && mfMqttUsername != "" && mfMqttSndTopic != "" {
+		_, err := api.NewMQTTPublisher(&logger, mfMqttHost, mfMqttUsername, mfMqttPassword, mfMqttClientID, mfMqttSndTopic)
+		if err != nil {
+			logger.Error(fmt.Sprintf("Failed to create mqtt publisher: %s", err))
+		}
 	}
-	defer closeConn(nc, logger)
 
+	// create a service
 	svc := newService(db, logger)
 
-	logger.Info(fmt.Sprintf("pid: %d connecting to nats\n", os.Getpid()))
-	nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
+	// connect to NATS
+	connectToNats(svc, logger)
 
+	// configure endpoints and start http server
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), httpapi.MakeHandler(svc, logger))
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed to init http server on port %s: ", cfg.Port))
@@ -137,7 +149,19 @@ func loadConfig() config {
 		dbConfig: dbConfig,
 	}
 }
+func connectToNats(svc exapp.Service, logger logger.Logger) {
 
+	logger.Info(fmt.Sprintf("connecting %s", defNatsURL))
+
+	nc, err := nats.Connect(defNatsURL)
+	defer closeConn(nc, logger)
+
+	if err != nil {
+		logger.Error("Failed to connect to nats")
+	} else {
+		nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
+	}
+}
 func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 	db, err := postgres.Connect(dbConfig, logger)
 
@@ -163,6 +187,7 @@ func newService(db *sql.DB, logger logger.Logger) exapp.Service {
 	eventsRepository := postgres.New(db, logger)
 	svc := exapp.New(eventsRepository, logger)
 	svc = api.LoggingMiddleware(svc)
+
 	svc = api.MetricsMiddleware(
 		svc,
 		kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
