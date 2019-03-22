@@ -1,0 +1,59 @@
+###
+# Copyright (c) 2015-2017 Mainflux
+#
+# Mainflux is licensed under an Apache license, version 2.0 license.
+# All rights not explicitly granted in the Apache license, version 2.0 are reserved.
+# See the included LICENSE file for more details.
+###
+
+version: "3"
+
+networks:
+        docker_mainflux-base-net:
+                external: true
+
+
+services:
+  events-db:
+    image: postgres:10.2-alpine
+    container_name: edgexapp-events-db
+    restart: on-failure
+    environment:
+      POSTGRES_USER: mainflux
+      POSTGRES_PASSWORD: mainflux
+      POSTGRES_DB: events
+    networks:
+      - docker_mainflux-base-net
+
+  edgex-app:
+    image: edgex-app:latest
+    container_name: edgex-app
+    depends_on:
+      - events-db
+    expose:
+      - 8000
+    restart: on-failure
+    environment:
+      MF_EDGEX_APP_LOG_LEVEL: debug
+      MF_EDGEX_DB_HOST: events-db
+      MF_EDGEX_DB_PORT: 5432
+      MF_EDGEX_DB_USER: mainflux
+      MF_EDGEX_DB_PASS: mainflux
+      MF_EDGEX_DB: events
+      MF_NATS_URL: nats://nats:4222
+    ports:
+      - 8000:8000
+    networks:
+      - docker_mainflux-base-net
+
+        # nats:
+        #image: nats:1.3.0
+        # container_name: edgexapp-nats
+        #expose:
+        #- 4222
+        #restart: on-failure
+        #networks:
+        #- mainflux-base-net
+        #ports:
+        #- 4222:4222
+  

@@ -72,17 +72,9 @@ func main() {
 	}
 	defer db.Close()
 
-	logger.Info(fmt.Sprintf("connecting %s", defNatsURL))
-	nc, err := nats.Connect(defNatsURL)
-	if err != nil {
-		logger.Error("Failed to connect to nats")
-	}
-	defer closeConn(nc, logger)
-
 	svc := newService(db, logger)
 
-	logger.Info(fmt.Sprintf("pid: %d connecting to nats\n", os.Getpid()))
-	nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
+	connectToNats(svc, cfg.NatsURL, logger)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), httpapi.MakeHandler(svc, logger))
 	if err != nil {
@@ -137,7 +129,19 @@ func loadConfig() config {
 		dbConfig: dbConfig,
 	}
 }
+func connectToNats(svc exapp.Service, natsurl string, logger logger.Logger) {
 
+	logger.Info(fmt.Sprintf("connecting %s", natsurl))
+
+	nc, err := nats.Connect(natsurl)
+	defer closeConn(nc, logger)
+
+	if err != nil {
+		logger.Error("Failed to connect to nats")
+	} else {
+		nc.Subscribe(topicUnknown, exapp.NatsMSGHandler(svc))
+	}
+}
 func connectToDB(dbConfig postgres.Config, logger logger.Logger) *sql.DB {
 	db, err := postgres.Connect(dbConfig, logger)
 
