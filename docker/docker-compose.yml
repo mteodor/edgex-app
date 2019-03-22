@@ -56,5 +56,4 @@ services:
         #- mainflux-base-net
         #ports:
         #- 4222:4222
-
   
