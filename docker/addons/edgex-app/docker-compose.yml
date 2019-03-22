@@ -8,8 +8,8 @@
 version: "3"
 
 networks:
-  mainflux-base-net:
-    driver: bridge
+  docker_mainflux-base-net:
+    external: true 
 
 services:
   events-db:
@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: mainflux
       POSTGRES_DB: events
     networks:
-      - mainflux-base-net
+      - docker_mainflux-base-net
 
   edgex-app:
     image: mainflux/users:latest
@@ -37,8 +37,10 @@ services:
       MF_EDGEX_DB_PORT: 5432
       MF_EDGEX_DB_USER: mainflux
       MF_EDGEX_DB_PASS: mainflux
+      MF_NATS_URL: nats://nats:4222
       MF_EDGEX_DB: events
     ports:
       - 8000:8000
     networks:
-      - mainflux-base-net
+      - docker_mainflux-base-net
+
