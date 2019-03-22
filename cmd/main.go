@@ -74,7 +74,7 @@ func main() {
 
 	svc := newService(db, logger)
 
-	connectToNats(svc, logger)
+	connectToNats(svc, cfg.NatsURL, logger)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port), httpapi.MakeHandler(svc, logger))
 	if err != nil {
@@ -129,11 +129,11 @@ func loadConfig() config {
 		dbConfig: dbConfig,
 	}
 }
-func connectToNats(svc exapp.Service, logger logger.Logger) {
+func connectToNats(svc exapp.Service, natsurl string, logger logger.Logger) {
 
-	logger.Info(fmt.Sprintf("connecting %s", defNatsURL))
+	logger.Info(fmt.Sprintf("connecting %s", natsurl))
 
-	nc, err := nats.Connect(defNatsURL)
+	nc, err := nats.Connect(natsurl)
 	defer closeConn(nc, logger)
 
 	if err != nil {
