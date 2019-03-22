@@ -9,8 +9,9 @@
 version: "3"
 
 networks:
-  mainflux-base-net:
-    driver: bridge
+        docker_mainflux-base-net:
+                external: true
+
 
 services:
   events-db:
@@ -22,7 +23,7 @@ services:
       POSTGRES_PASSWORD: mainflux
       POSTGRES_DB: events
     networks:
-      - mainflux-base-net
+      - docker_mainflux-base-net
 
   edgex-app:
     image: edgex-app:latest
@@ -39,20 +40,21 @@ services:
       MF_EDGEX_DB_USER: mainflux
       MF_EDGEX_DB_PASS: mainflux
       MF_EDGEX_DB: events
+      MF_NATS_URL: nats://nats:4222
     ports:
       - 8000:8000
     networks:
-      - mainflux-base-net
+      - docker_mainflux-base-net
 
-  nats:
-    image: nats:1.3.0
-    container_name: edgexapp-nats
-    expose:
-      - 4222
-    restart: on-failure
-    networks:
-      - mainflux-base-net
-    ports:
-      - 4222:4222
+        # nats:
+        #image: nats:1.3.0
+        # container_name: edgexapp-nats
+        #expose:
+        #- 4222
+        #restart: on-failure
+        #networks:
+        #- mainflux-base-net
+        #ports:
+        #- 4222:4222
 
   
